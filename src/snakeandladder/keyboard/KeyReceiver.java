@@ -5,6 +5,7 @@ import com.jogamp.newt.event.KeyListener;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.BiFunction;
 
 import static com.jogamp.newt.event.KeyEvent.VK_ESCAPE;
 
@@ -33,9 +34,10 @@ public class KeyReceiver implements KeyListener {
         if (keyEvent.isAutoRepeat()) {
             return;
         }
-        if (receiveKeyPressedFrame.containsKey(keyEvent.getKeyCode())) {
-            receiveKeyPressedFrame.replace(keyEvent.getKeyCode(),
-                    receiveKeyPressedFrame.get(keyEvent.getKeyCode()) + 1);
+        short keycode = keyEvent.getKeyCode();
+        if (receiveKeyPressedFrame.containsKey(keycode)) {
+            receiveKeyPressedFrame.replace(keycode,
+                    receiveKeyPressedFrame.get(keycode) + 1);
         }
     }
 
@@ -49,7 +51,9 @@ public class KeyReceiver implements KeyListener {
         }
     }
 
-    public void increaseKeyPressedFrame(){
-        this.receiveKeyPressedFrame.replaceAll((k, v) -> v >= 0 ? v + 1 : -1);
+    private static final BiFunction<Short, Integer, Integer> replaceFunction = (k, v) -> v >= 0 ? v + 1 : -1;
+
+    public void increaseKeyPressedFrame() {
+        this.receiveKeyPressedFrame.replaceAll(replaceFunction);
     }
 }
