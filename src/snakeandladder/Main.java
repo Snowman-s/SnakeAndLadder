@@ -1,4 +1,4 @@
-package jogl3DTest;
+package snakeandladder;
 
 import com.jogamp.newt.event.WindowAdapter;
 import com.jogamp.newt.event.WindowEvent;
@@ -7,7 +7,7 @@ import com.jogamp.opengl.*;
 import com.jogamp.opengl.glu.GLU;
 import com.jogamp.opengl.util.FPSAnimator;
 import com.jogamp.opengl.util.gl2.GLUT;
-import jogl3DTest.keyboard.KeyReceiver;
+import snakeandladder.keyboard.KeyReceiver;
 
 import static com.jogamp.newt.event.KeyEvent.VK_ESCAPE;
 import static com.jogamp.opengl.GL.*;

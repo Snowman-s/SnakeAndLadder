@@ -1,4 +1,4 @@
-package jogl3DTest.keyboard;
+package snakeandladder.keyboard;
 
 import com.jogamp.newt.event.KeyEvent;
 import com.jogamp.newt.event.KeyListener;
