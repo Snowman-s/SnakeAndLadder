@@ -7,22 +7,26 @@ import com.jogamp.opengl.*;
 import com.jogamp.opengl.glu.GLU;
 import com.jogamp.opengl.util.FPSAnimator;
 import com.jogamp.opengl.util.gl2.GLUT;
+import snakeandladder.glrenderer.GLRenderer;
 import snakeandladder.keyboard.KeyReceiver;
+import snakeandladder.taskcallable.TaskCallable;
+
+import java.util.Objects;
 
 import static com.jogamp.opengl.GL.*;
-import static com.jogamp.opengl.GL.GL_BACK;
 import static com.jogamp.opengl.fixedfunc.GLLightingFunc.GL_LIGHT0;
 import static com.jogamp.opengl.fixedfunc.GLLightingFunc.GL_LIGHTING;
+import static java.lang.System.exit;
 
 public class GLDisplay {
     private final GLDisplayInnerClass glDisplayInnerClass;
 
-    private GLDisplay() {
-        glDisplayInnerClass = new GLDisplayInnerClass();
+    private GLDisplay(TaskCallable onDisplay, GLRenderer onRender) {
+        glDisplayInnerClass = new GLDisplayInnerClass(onDisplay, onRender);
     }
 
-    public static GLDisplay getInstance() {
-        return new GLDisplay();
+    public static GLDisplay getInstance(TaskCallable onDisplay, GLRenderer glRenderer) {
+        return new GLDisplay(Objects.requireNonNull(onDisplay), Objects.requireNonNull(glRenderer));
     }
 
     public int getWidth() {
@@ -49,7 +53,12 @@ public class GLDisplay {
         return glDisplayInnerClass.keyReceiver.isKeyPressed(key);
     }
 
-    private static class GLDisplayInnerClass implements GLEventListener {
+    public void endWindow() {
+        glDisplayInnerClass.glWindow.destroy();
+        exit(0);
+    }
+
+    private class GLDisplayInnerClass implements GLEventListener {
         private int width, height;
         private float widthByHeight;
 
@@ -61,14 +70,23 @@ public class GLDisplay {
 
         private final KeyReceiver keyReceiver;
 
-        private GLDisplayInnerClass() {
+        private final TaskCallable onDisplay;
+        private final GLRenderer onRender;
+
+        private final TaskCallable.TaskCallArgument arg;
+
+        private GLDisplayInnerClass(TaskCallable onDisplay, GLRenderer onRender) {
+            this.onDisplay = onDisplay;
+            this.onRender = onRender;
+            arg = new TaskCallable.TaskCallArgument();
+
             GLCapabilities caps = new GLCapabilities(GLProfile.get(GLProfile.GL2));
             glWindow = GLWindow.create(caps);
 
             glWindow.addWindowListener(new WindowAdapter() {
                 @Override
                 public void windowDestroyed(WindowEvent evt) {
-                    System.exit(0);
+                    exit(0);
                 }
             });
 
@@ -94,9 +112,9 @@ public class GLDisplay {
             gl.glClearColor(0F, 0F, 0F, 1);
             gl.glEnable(GL_BLEND);
             gl.glEnable(GL_LINE_SMOOTH);
-            gl.glEnable(GL_DEPTH_TEST);
-            gl.glEnable(GL_LIGHTING);
-            gl.glEnable(GL_LIGHT0);
+            //gl.glEnable(GL_DEPTH_TEST);
+            //gl.glEnable(GL_LIGHTING);
+            //gl.glEnable(GL_LIGHT0);
             gl.glCullFace(GL_BACK);
             gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
             animator.setUpdateFPSFrames(60, null);
@@ -109,6 +127,12 @@ public class GLDisplay {
 
         @Override
         public void display(GLAutoDrawable glAutoDrawable) {
+            GL2 gl2 = glAutoDrawable.getGL().getGL2();
+            gl2.glClear(GL2.GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+            arg.addFrameCount();
+            onDisplay.task(arg);
+            onRender.render(GLDisplay.this, glAutoDrawable);
         }
 
         @Override
@@ -117,6 +141,7 @@ public class GLDisplay {
             gl.glLoadIdentity();
             this.widthByHeight = (float) (width = i2) / (float) (height = i3);
             glu.gluPerspective(30.0, widthByHeight, 0.01, 100.0);
+            glu.gluLookAt(0, 1, 1, 0, 0, 0, 0, 1, 0);
         }
     }
 }
