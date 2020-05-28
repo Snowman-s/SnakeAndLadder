@@ -112,7 +112,7 @@ public class GLDisplay {
             gl.glClearColor(0F, 0F, 0F, 1);
             gl.glEnable(GL_BLEND);
             gl.glEnable(GL_LINE_SMOOTH);
-            //gl.glEnable(GL_DEPTH_TEST);
+            gl.glEnable(GL_DEPTH_TEST);
             //gl.glEnable(GL_LIGHTING);
             //gl.glEnable(GL_LIGHT0);
             gl.glCullFace(GL_BACK);
