@@ -17,15 +17,17 @@ public class Main {
     private static List<GLRenderer> glRendererList;
 
     public static void main(String[] args) {
-        taskCallableList = new CopyOnWriteArrayList<>();
-        glRendererList = new CopyOnWriteArrayList<>();
+        //taskCallableList = new CopyOnWriteArrayList<>();
+        //glRendererList = new CopyOnWriteArrayList<>();
 
-        RotateCube rotateCube = new RotateCube();
+        //glDisplay = GLDisplay.getInstance(Main::task, Main::render);
 
-        taskCallableList.add(rotateCube);
-        glRendererList.add(rotateCube);
+        Field field = new Field.Builder(0)
+                .gridNum(50)
+                .randomiseSnakeAndLadder()
+                .build();
 
-        glDisplay = GLDisplay.getInstance(Main::task, Main::render);
+        System.out.println("field = " + field);
     }
 
     public static synchronized void task(TaskCallable.TaskCallArgument arg) {
