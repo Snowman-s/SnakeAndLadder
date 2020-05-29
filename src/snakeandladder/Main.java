@@ -44,22 +44,4 @@ public class Main {
             renderer.render(display, autoDrawable);
         }
     }
-
-    static class RotateCube implements TaskCallable, GLRenderer{
-        volatile int frameCount = 0;
-
-        @Override
-        public synchronized void render(GLDisplay glDisplay, GLAutoDrawable glAutoDrawable) {
-            GL2 gl = glAutoDrawable.getGL().getGL2();
-            gl.glPushMatrix();
-            gl.glRotated(frameCount, 0, 1, 0);
-            glDisplay.getGLUT().glutWireCube(0.4F);
-            gl.glPopMatrix();
-        }
-
-        @Override
-        public synchronized void task(TaskCallArgument arg) {
-            frameCount++;
-        }
-    }
 }

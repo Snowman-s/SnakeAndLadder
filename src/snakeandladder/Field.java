@@ -1,7 +1,6 @@
 package snakeandladder;
 
 import java.util.*;
-import java.util.stream.Stream;
 
 /**
  * へびとはしごのフィールド
@@ -133,7 +132,7 @@ public class Field {
 
         @Override
         public String toString() {
-            return "GridPair{" + from + "->" +  to + '}';
+            return "GridPair{" + from + "->" + to + '}';
         }
     }
 }
