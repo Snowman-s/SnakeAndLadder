@@ -1,4 +1,4 @@
-package snakeandladder;
+package snakeandladder.field;
 
 import java.util.*;
 

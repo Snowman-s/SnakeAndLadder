@@ -1,8 +1,8 @@
 package snakeandladder;
 
-import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GLAutoDrawable;
 import snakeandladder.display.GLDisplay;
+import snakeandladder.field.Field;
 import snakeandladder.glrenderer.GLRenderer;
 import snakeandladder.taskcallable.TaskCallable;
 
@@ -17,8 +17,8 @@ public class Main {
     private static List<GLRenderer> glRendererList;
 
     public static void main(String[] args) {
-        //taskCallableList = new CopyOnWriteArrayList<>();
-        //glRendererList = new CopyOnWriteArrayList<>();
+        taskCallableList = new CopyOnWriteArrayList<>();
+        glRendererList = new CopyOnWriteArrayList<>();
 
         //glDisplay = GLDisplay.getInstance(Main::task, Main::render);
 
