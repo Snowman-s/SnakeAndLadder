@@ -17,7 +17,9 @@ public class SquareFieldRenderer extends AbstractGLRenderer {
     private final Field field;
     private final int gridNum;
     private final int width;
-    /**初期位置のみに影響し、実際このheightのぶんだけマスが書かれるとは限らない。*/
+    /**
+     * 初期位置のみに影響し、実際このheightのぶんだけマスが書かれるとは限らない。
+     */
     private final int height;
 
     private final ModOrientation modOrientation;
@@ -101,7 +103,7 @@ public class SquareFieldRenderer extends AbstractGLRenderer {
     Point getGridPoint(int grid) {
         int x = grid % width, y = grid / width + 1;
         if (y % 2 == 0) {
-            x = width - x;
+            x = width - x - 1;
         }
         return new Point(x, y);
     }

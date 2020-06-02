@@ -25,7 +25,9 @@ public class Main {
 
         glDisplay = GLDisplay.getInstance(Main::task, Main::render);
 
-        Field field = new Field.Builder(0)
+        long seed = System.currentTimeMillis();
+
+        Field field = new Field.Builder(seed)
                 .gridNum(45)
                 .randomiseSnakeAndLadder()
                 .build();
@@ -34,6 +36,7 @@ public class Main {
 
         glRendererList.add(fieldRenderer);
 
+        System.out.println("seed = " + seed);
         System.out.println("field.getLadderAndSnake() = " + field.getLadderAndSnake());
     }
 

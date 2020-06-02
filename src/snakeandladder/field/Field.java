@@ -34,14 +34,16 @@ public class Field {
         Collections.shuffle(remainGrid, random);
 
         for (int i = 0; i < this.snakeNum; i++) {
+            assert !remainGrid.isEmpty();
             int from = remainGrid.remove(0);
             int to = random.nextInt(from - 1) + 1;
             ladderAndSnake.add(new GridPair(from, to));
         }
 
         for (int i = 0; i < this.ladderNum; i++) {
+            assert !remainGrid.isEmpty();
             int from = remainGrid.remove(0);
-            int to = random.nextInt(gridNum - from) + from + 1;
+            int to = random.nextInt(gridNum - 1 - from) + from + 1;
             ladderAndSnake.add(new GridPair(from, to));
         }
     }
