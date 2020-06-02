@@ -18,7 +18,7 @@ public class Field {
 
         if (builder.randomSnakeAndLadder) {
             int snakeAndLadderNum = this.gridNum / 10;
-            this.snakeNum = random.nextInt(snakeAndLadderNum);
+            this.snakeNum = snakeAndLadderNum > 0 ? random.nextInt(snakeAndLadderNum) : 0;
             this.ladderNum = snakeAndLadderNum - this.snakeNum;
         } else {
             this.snakeNum = builder.snakeNum;
@@ -92,8 +92,8 @@ public class Field {
         }
 
         public Builder gridNum(int gridNum) {
-            if (gridNum <= 1 || 100 < gridNum)
-                throw new IllegalArgumentException("gridSize must be 1 < gridSize <= 100:" + gridNum);
+            if (gridNum <= 1)
+                throw new IllegalArgumentException("gridSize must be 1 < gridSize:" + gridNum);
             this.gridNum = gridNum;
             return this;
         }

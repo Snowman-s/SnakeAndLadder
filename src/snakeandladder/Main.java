@@ -28,7 +28,7 @@ public class Main {
         long seed = System.currentTimeMillis();
 
         Field field = new Field.Builder(seed)
-                .gridNum(45)
+                .gridNum(2)
                 .randomiseSnakeAndLadder()
                 .build();
 

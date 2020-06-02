@@ -35,9 +35,10 @@ public class SquareFieldRenderer extends AbstractGLRenderer {
         this.modOrientation = modOrientation;
 
         this.gridNum = field.getGridNum();
-        int sqGrid = (int) (Math.sqrt(gridNum) + 1);
+        int sqGrid = (int) (Math.sqrt(gridNum));
 
-        this.width = this.height = sqGrid;
+        this.width = sqGrid;
+        this.height = sqGrid;
     }
 
     @Override
