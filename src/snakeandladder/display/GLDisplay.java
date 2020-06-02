@@ -113,8 +113,8 @@ public class GLDisplay {
             gl.glEnable(GL_BLEND);
             gl.glEnable(GL_LINE_SMOOTH);
             gl.glEnable(GL_DEPTH_TEST);
-            //gl.glEnable(GL_LIGHTING);
-            //gl.glEnable(GL_LIGHT0);
+            gl.glEnable(GL_LIGHTING);
+            gl.glEnable(GL_LIGHT0);
             gl.glCullFace(GL_BACK);
             gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
             animator.setUpdateFPSFrames(60, null);
@@ -141,7 +141,7 @@ public class GLDisplay {
             gl.glLoadIdentity();
             this.widthByHeight = (float) (width = i2) / (float) (height = i3);
             glu.gluPerspective(30.0, widthByHeight, 0.01, 100.0);
-            glu.gluLookAt(0, 1, 1, 0, 0, 0, 0, 1, 0);
+            glu.gluLookAt(0, 2, -1.5, 0, 0, 0, 0, 0, 1);
         }
     }
 }

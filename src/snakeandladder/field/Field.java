@@ -27,7 +27,7 @@ public class Field {
 
         List<Integer> remainGrid = new ArrayList<>();
 
-        for (int i = 2; i < gridNum; i++) {
+        for (int i = 1; i < gridNum - 1; i++) {
             remainGrid.add(i);
         }
 
@@ -44,6 +44,22 @@ public class Field {
             int to = random.nextInt(gridNum - from) + from + 1;
             ladderAndSnake.add(new GridPair(from, to));
         }
+    }
+
+    public Set<GridPair> getLadderAndSnake() {
+        return Set.copyOf(ladderAndSnake);
+    }
+
+    public int getGridNum() {
+        return gridNum;
+    }
+
+    public int getLadderNum() {
+        return ladderNum;
+    }
+
+    public int getSnakeNum() {
+        return snakeNum;
     }
 
     @Override
@@ -108,12 +124,20 @@ public class Field {
         }
     }
 
-    private static class GridPair {
+    public static class GridPair {
         private final int from, to;
 
         public GridPair(int from, int to) {
             this.from = from;
             this.to = to;
+        }
+
+        public int getFrom() {
+            return from;
+        }
+
+        public int getTo() {
+            return to;
         }
 
         @Override
