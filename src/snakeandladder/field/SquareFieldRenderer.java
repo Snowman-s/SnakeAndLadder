@@ -46,8 +46,8 @@ public class SquareFieldRenderer extends AbstractGLRenderer {
         gl.glTranslated(-width / 2F + 0.5F,
                 0,
                 -height / 2F - 0.5F);
+        gl.glPushMatrix();
         for (int i = 0; i < gridNum; i++) {
-            gl.glPushMatrix();
             int translateX = (i % width == 0 ? 0 : ((i / width) % 2 < 1 ? 1 : -1));
             int translateZ = (i % width == 0 ? 1 : 0);
             if (i != 0) {
