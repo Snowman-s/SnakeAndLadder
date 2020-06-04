@@ -6,10 +6,12 @@ import snakeandladder.display.GLDisplay;
 import snakeandladder.field.Field;
 import snakeandladder.field.SquareFieldRenderer;
 import snakeandladder.glrenderer.GLRenderer;
+import snakeandladder.player.Player;
 import snakeandladder.taskcallable.TaskCallable;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ThreadLocalRandom;
 
 import static com.jogamp.newt.event.KeyEvent.VK_ESCAPE;
 import static com.jogamp.opengl.fixedfunc.GLLightingFunc.*;
@@ -18,6 +20,10 @@ public class Main {
     private static GLDisplay glDisplay;
     private static List<TaskCallable> taskCallableList;
     private static List<GLRenderer> glRendererList;
+    private static List<Player> playerList;
+
+    private static float[] positionLight = new float[]{0, 0, 0, 1},
+            ambientLight = new float[]{0.5F, 0.5F, 0.5F, 1F};
 
     public static void main(String[] args) {
         taskCallableList = new CopyOnWriteArrayList<>();
@@ -27,14 +33,18 @@ public class Main {
 
         long seed = System.currentTimeMillis();
 
+        int gridNum = 49;
+
         Field field = new Field.Builder(seed)
-                .gridNum(2)
+                .gridNum(gridNum)
                 .randomiseSnakeAndLadder()
                 .build();
 
-        SquareFieldRenderer fieldRenderer = new SquareFieldRenderer(field);
+        playerList = Player.createPlayerList(4, gridNum);
 
-        glRendererList.add(fieldRenderer);
+        SquareFieldRenderer fieldRenderer = new SquareFieldRenderer(field);
+        FieldPlayerRenderer fieldPlayerRenderer = new FieldPlayerRenderer(fieldRenderer, playerList);
+        glRendererList.add(fieldPlayerRenderer);
 
         System.out.println("seed = " + seed);
         System.out.println("field.getLadderAndSnake() = " + field.getLadderAndSnake());
@@ -44,17 +54,16 @@ public class Main {
         if (glDisplay.isKeyPressed(VK_ESCAPE)) {
             glDisplay.endWindow();
         }
-        for (TaskCallable taskCallable : taskCallableList) {
-            taskCallable.task(arg);
+        if (arg.getFrameCount() % 50 == 0) {
+            playerList.get(arg.getFrameCount() / 50 % 4).addGridNumber(ThreadLocalRandom.current().nextInt(6) + 1);
         }
+        taskCallableList.forEach(t -> t.task(arg));
     }
 
     public static synchronized void render(GLDisplay display, GLAutoDrawable autoDrawable) {
         GL2 gl = autoDrawable.getGL().getGL2();
-        gl.glLightfv(GL_LIGHT0, GL_POSITION, new float[]{0, 0, 0, 1F}, 0);
-        gl.glLightfv(GL_LIGHT0, GL_AMBIENT, new float[]{0.5F, 0.5F, 0.5F, 0.5F}, 0);
-        for (GLRenderer renderer : glRendererList) {
-            renderer.render(display, autoDrawable);
-        }
+        gl.glLightfv(GL_LIGHT0, GL_POSITION, positionLight, 0);
+        gl.glLightfv(GL_LIGHT0, GL_AMBIENT, ambientLight, 0);
+        glRendererList.forEach(r -> r.render(display, autoDrawable));
     }
 }

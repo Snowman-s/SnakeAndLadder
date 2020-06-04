@@ -36,7 +36,7 @@ public class Field {
         for (int i = 0; i < this.snakeNum; i++) {
             assert !remainGrid.isEmpty();
             int from = remainGrid.remove(0);
-            int to = random.nextInt(from - 1) + 1;
+            int to = random.nextInt(from);
             ladderAndSnake.add(new GridPair(from, to));
         }
 
