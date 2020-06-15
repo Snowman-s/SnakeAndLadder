@@ -7,12 +7,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiFunction;
 
+import static com.jogamp.newt.event.KeyEvent.VK_ENTER;
 import static com.jogamp.newt.event.KeyEvent.VK_ESCAPE;
 
 public class KeyReceiver implements KeyListener {
     protected Map<Short, Integer> receiveKeyPressedFrame = new HashMap<>();
 
     public KeyReceiver() {
+        this.addReceiveKey(VK_ENTER);
         this.addReceiveKey(VK_ESCAPE);
     }
 
@@ -49,6 +51,10 @@ public class KeyReceiver implements KeyListener {
         if (receiveKeyPressedFrame.containsKey(keyEvent.getKeyCode())) {
             receiveKeyPressedFrame.put(keyEvent.getKeyCode(), -1);
         }
+    }
+
+    public void resetKey(short key) {
+        receiveKeyPressedFrame.put(key, -1);
     }
 
     private static final BiFunction<Short, Integer, Integer> replaceFunction = (k, v) -> v >= 0 ? v + 1 : -1;

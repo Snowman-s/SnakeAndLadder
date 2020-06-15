@@ -70,7 +70,7 @@ public class SquareFieldRenderer extends FieldRenderer {
             gl.glPopMatrix();
         }
         for (Field.GridPair gridPair : field.getLadderAndSnake()) {
-            int fromGrid = gridPair.getFrom(), toGrid = gridPair.getTo();
+            int fromGrid = gridPair.from(), toGrid = gridPair.to();
             float[] color;
             if (fromGrid > toGrid) {
                 color = ColorUtility.getColor(0, 1, 0, 1);

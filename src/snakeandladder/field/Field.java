@@ -134,11 +134,11 @@ public class Field {
             this.to = to;
         }
 
-        public int getFrom() {
+        public int from() {
             return from;
         }
 
-        public int getTo() {
+        public int to() {
             return to;
         }
 

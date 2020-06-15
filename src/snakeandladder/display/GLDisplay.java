@@ -53,6 +53,14 @@ public class GLDisplay {
         return glDisplayInnerClass.keyReceiver.isKeyPressed(key);
     }
 
+    public void increaseKeyPressedCount() {
+        glDisplayInnerClass.keyReceiver.increaseKeyPressedFrame();
+    }
+
+    public void resetKey(short key){
+        glDisplayInnerClass.keyReceiver.resetKey(key);
+    }
+
     public void endWindow() {
         glDisplayInnerClass.glWindow.destroy();
         exit(0);
