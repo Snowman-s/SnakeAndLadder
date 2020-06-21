@@ -7,14 +7,19 @@ import snakeandladder.field.Field;
 import snakeandladder.field.SquareFieldRenderer;
 import snakeandladder.glrenderer.GLRenderer;
 import snakeandladder.player.Player;
+import snakeandladder.properties.MappedProperties;
+import snakeandladder.properties.PropertiesReader;
 import snakeandladder.roulette.CardRoulette;
-import snakeandladder.roulette.Roulette;
 import snakeandladder.taskcallable.TaskCallable;
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import java.util.Properties;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.logging.*;
 
 import static com.jogamp.newt.event.KeyEvent.VK_ENTER;
 import static com.jogamp.newt.event.KeyEvent.VK_ESCAPE;
@@ -35,12 +40,16 @@ public class Main {
 
     private static Phase phase = Phase.ChangeTurn;
 
+    private static MappedProperties properties;
+
     private static final float[] positionLight = new float[]{0, 0, 0, 1},
             ambientLight = new float[]{0.5F, 0.5F, 0.5F, 1F};
 
     public static void main(String[] args) {
         taskCallableList = new CopyOnWriteArrayList<>();
         glRendererList = new CopyOnWriteArrayList<>();
+
+        properties = PropertiesReader.load();
 
         glDisplay = GLDisplay.getInstance(Main::task, Main::render);
 
@@ -139,8 +148,10 @@ public class Main {
 
             @Override
             void _task(TaskCallArgument arg) {
-                diceNum = ThreadLocalRandom.current().nextInt(1, 7);
-                roulette = new CardRoulette(1, 6, diceNum);
+                int minDice = properties.getInt(MappedProperties.IntKey.minDice);
+                int maxDice = properties.getInt(MappedProperties.IntKey.maxDice);
+                diceNum = ThreadLocalRandom.current().nextInt(minDice, maxDice + 1);
+                roulette = new CardRoulette(minDice, maxDice, diceNum);
 
                 taskCallableList.add(roulette);
                 glRendererList.add(roulette);
