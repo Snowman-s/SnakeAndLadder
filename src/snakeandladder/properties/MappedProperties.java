@@ -1,20 +1,25 @@
 package snakeandladder.properties;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.function.IntSupplier;
+import java.util.function.LongSupplier;
 import java.util.function.Supplier;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class MappedProperties {
     Map<IntKey, Integer> integerMap = new HashMap<>();
+    Map<LongKey, Long> longMap = new HashMap<>();
     Map<StringKey, String> stringMap = new HashMap<>();
 
-    protected MappedProperties(){}
+    MappedProperties() {
+    }
 
     public int getInt(IntKey intKey) {
         return integerMap.get(intKey);
+    }
+
+    public long getLong(LongKey longKey) {
+        return longMap.get(longKey);
     }
 
     public String getString(StringKey stringKey) {
@@ -22,28 +27,72 @@ public class MappedProperties {
     }
 
     public enum IntKey {
-        minDice("min_dice", 1),
-        maxDice("max_dice", 6);
+        minDice("min_dice", () -> 1),
+        maxDice("max_dice", () -> 6),
+        gridNumber("num_grid", () -> 49);
 
-        final String keyString;
-        final String defaultStringData;
-        final int defaultIntData;
+        private final String keyString;
+        private final IntSupplier defaultData;
 
-        IntKey(String keyString, int defaultData) {
+        IntKey(String keyString, IntSupplier defaultData) {
             this.keyString = keyString;
-            this.defaultIntData = defaultData;
-            this.defaultStringData = Integer.toString(defaultData);
+            this.defaultData = defaultData;
+        }
+
+        String getKeyString() {
+            return keyString;
+        }
+
+        String getDefaultStringData() {
+            return Integer.toString(defaultData.getAsInt());
+        }
+
+        int getDefaultIntData() {
+            return defaultData.getAsInt();
+        }
+    }
+
+    public enum LongKey {
+        fieldSeed("field_seed", System::currentTimeMillis),
+        diceSeed("dice_seed", System::currentTimeMillis);
+
+        private final String keyString;
+        private final LongSupplier defaultLongData;
+
+        LongKey(String keyString, LongSupplier defaultData) {
+            this.keyString = keyString;
+            this.defaultLongData = defaultData;
+        }
+
+        String getKeyString() {
+            return keyString;
+        }
+
+        String getDefaultStringData() {
+            return Long.toString(defaultLongData.getAsLong());
+        }
+
+        long getDefaultLongData() {
+            return defaultLongData.getAsLong();
         }
     }
 
     public enum StringKey {
         ;
-        final String keyString;
-        final String defaultData;
+        private final String keyString;
+        private final Supplier<String> defaultData;
 
-        StringKey(String keyString, String defaultData) {
+        StringKey(String keyString, Supplier<String> defaultData) {
             this.keyString = keyString;
             this.defaultData = defaultData;
+        }
+
+        String getKeyString() {
+            return keyString;
+        }
+
+        public String getDefaultData() {
+            return defaultData.get();
         }
     }
 }

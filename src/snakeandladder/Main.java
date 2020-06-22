@@ -12,14 +12,11 @@ import snakeandladder.properties.PropertiesReader;
 import snakeandladder.roulette.CardRoulette;
 import snakeandladder.taskcallable.TaskCallable;
 
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
-import java.util.Properties;
+import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.logging.*;
 
 import static com.jogamp.newt.event.KeyEvent.VK_ENTER;
 import static com.jogamp.newt.event.KeyEvent.VK_ESCAPE;
@@ -42,6 +39,8 @@ public class Main {
 
     private static MappedProperties properties;
 
+    private static Random diceRandom;
+
     private static final float[] positionLight = new float[]{0, 0, 0, 1},
             ambientLight = new float[]{0.5F, 0.5F, 0.5F, 1F};
 
@@ -51,13 +50,16 @@ public class Main {
 
         properties = PropertiesReader.load();
 
+        long fieldSeed = properties.getLong(MappedProperties.LongKey.fieldSeed);
+        long diceSeed = properties.getLong(MappedProperties.LongKey.diceSeed);
+
+        diceRandom = new Random(diceSeed);
+
         glDisplay = GLDisplay.getInstance(Main::task, Main::render);
 
-        long seed = System.currentTimeMillis();
+        int gridNum = properties.getInt(MappedProperties.IntKey.gridNumber);
 
-        int gridNum = 49;
-
-        field = new Field.Builder(seed)
+        field = new Field.Builder(fieldSeed)
                 .gridNum(gridNum)
                 .randomiseSnakeAndLadder()
                 .build();
@@ -68,8 +70,8 @@ public class Main {
         fieldPlayerRenderer = new FieldPlayerRenderer(fieldRenderer, playerList);
         glRendererList.add(fieldPlayerRenderer);
 
-        System.out.println("seed = " + seed);
-        System.out.println("field.getLadderAndSnake() = " + field.getLadderAndSnake());
+        System.out.println("field_seed = " + fieldSeed);
+        System.out.println("dice_seed = " + diceSeed);
 
         setPlayer(0);
     }
@@ -94,12 +96,12 @@ public class Main {
         setPhase(Phase.ChangeTurn);
     }
 
-    public static synchronized void task(TaskCallable.TaskCallArgument arg) {
+    public static void task(TaskCallable.TaskCallArgument arg) {
         phase.task(arg);
         taskCallableList.forEach(t -> t.task(arg));
     }
 
-    public static synchronized void render(GLDisplay display, GLAutoDrawable autoDrawable) {
+    public static void render(GLDisplay display, GLAutoDrawable autoDrawable) {
         GL2 gl = autoDrawable.getGL().getGL2();
         gl.glLightfv(GL_LIGHT0, GL_POSITION, positionLight, 0);
         gl.glLightfv(GL_LIGHT0, GL_AMBIENT, ambientLight, 0);
@@ -150,7 +152,7 @@ public class Main {
             void _task(TaskCallArgument arg) {
                 int minDice = properties.getInt(MappedProperties.IntKey.minDice);
                 int maxDice = properties.getInt(MappedProperties.IntKey.maxDice);
-                diceNum = ThreadLocalRandom.current().nextInt(minDice, maxDice + 1);
+                diceNum = diceRandom.nextInt(maxDice + 1 - minDice) + minDice;
                 roulette = new CardRoulette(minDice, maxDice, diceNum);
 
                 taskCallableList.add(roulette);
