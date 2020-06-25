@@ -6,17 +6,23 @@ import snakeandladder.display.GLDisplay;
 import snakeandladder.field.Field;
 import snakeandladder.field.SquareFieldRenderer;
 import snakeandladder.glrenderer.GLRenderer;
+import snakeandladder.log.MyLogger;
 import snakeandladder.player.Player;
 import snakeandladder.properties.MappedProperties;
 import snakeandladder.properties.PropertiesReader;
 import snakeandladder.roulette.CardRoulette;
 import snakeandladder.taskcallable.TaskCallable;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.logging.FileHandler;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static com.jogamp.newt.event.KeyEvent.VK_ENTER;
 import static com.jogamp.newt.event.KeyEvent.VK_ESCAPE;
@@ -64,7 +70,7 @@ public class Main {
                 .randomiseSnakeAndLadder()
                 .build();
 
-        playerList = Player.createPlayerList(4, gridNum - 1);
+        playerList = Player.createPlayerList(properties.getInt(MappedProperties.IntKey.playerNumber), gridNum - 1);
 
         SquareFieldRenderer fieldRenderer = new SquareFieldRenderer(field);
         fieldPlayerRenderer = new FieldPlayerRenderer(fieldRenderer, playerList);

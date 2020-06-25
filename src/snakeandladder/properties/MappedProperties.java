@@ -29,7 +29,8 @@ public class MappedProperties {
     public enum IntKey {
         minDice("min_dice", () -> 1),
         maxDice("max_dice", () -> 6),
-        gridNumber("num_grid", () -> 49);
+        gridNumber("num_grid", () -> 49),
+        playerNumber("num_player", () -> 4);
 
         private final String keyString;
         private final IntSupplier defaultData;

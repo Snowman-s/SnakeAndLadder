@@ -9,6 +9,7 @@ import com.jogamp.opengl.util.FPSAnimator;
 import com.jogamp.opengl.util.gl2.GLUT;
 import snakeandladder.glrenderer.GLRenderer;
 import snakeandladder.keyboard.KeyReceiver;
+import snakeandladder.log.MyLogger;
 import snakeandladder.taskcallable.TaskCallable;
 
 import java.util.Objects;

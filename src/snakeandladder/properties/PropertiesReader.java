@@ -1,5 +1,7 @@
 package snakeandladder.properties;
 
+import snakeandladder.log.MyLogger;
+
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.List;
@@ -18,23 +20,25 @@ public final class PropertiesReader {
     public static MappedProperties load() {
         MappedProperties mappedProperties = new MappedProperties();
 
-        if(properties == null) {
+        if (properties == null) {
             properties = new Properties();
             try (FileInputStream inputStream = new FileInputStream(propertiesFileName)) {
                 properties.load(inputStream);
             } catch (IOException ioException) {
-                Logger.getAnonymousLogger().log(Level.WARNING, propertiesFileName);
+                MyLogger.loggerIfAbsent(l -> l.warning(propertiesFileName));
             }
         }
 
         //int
         for (MappedProperties.IntKey intKey : MappedProperties.IntKey.values()) {
-            String property = properties.getProperty(intKey.getKeyString(), intKey.getDefaultStringData());
+            String key = intKey.getKeyString();
+            String property = properties.getProperty(key, intKey.getDefaultStringData());
             int intProperty;
 
             try {
                 intProperty = Integer.parseInt(property);
             } catch (NumberFormatException e) {
+                MyLogger.loggerIfAbsent(l -> l.info("property " + key + "(" + property + ") cannot convert to int"));
                 intProperty = intKey.getDefaultIntData();
             }
             mappedProperties.integerMap.put(intKey, intProperty);
@@ -42,12 +46,14 @@ public final class PropertiesReader {
 
         //long
         for (MappedProperties.LongKey longKey : MappedProperties.LongKey.values()) {
+            String key = longKey.getKeyString();
             String property = properties.getProperty(longKey.getKeyString(), longKey.getDefaultStringData());
             long longProperty;
 
             try {
                 longProperty = Long.parseLong(property);
             } catch (NumberFormatException e) {
+                MyLogger.loggerIfAbsent(l -> l.info("property " + key + "(" + property + ") cannot convert to long"));
                 longProperty = longKey.getDefaultLongData();
             }
             mappedProperties.longMap.put(longKey, longProperty);
