@@ -13,19 +13,12 @@ import snakeandladder.properties.PropertiesReader;
 import snakeandladder.roulette.CardRoulette;
 import snakeandladder.taskcallable.TaskCallable;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.logging.FileHandler;
-import java.util.logging.Handler;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-import static com.jogamp.newt.event.KeyEvent.VK_ENTER;
-import static com.jogamp.newt.event.KeyEvent.VK_ESCAPE;
+import static com.jogamp.newt.event.KeyEvent.*;
 import static com.jogamp.opengl.fixedfunc.GLLightingFunc.*;
 
 public class Main {
@@ -54,32 +47,9 @@ public class Main {
         taskCallableList = new CopyOnWriteArrayList<>();
         glRendererList = new CopyOnWriteArrayList<>();
 
-        properties = PropertiesReader.load();
-
-        long fieldSeed = properties.getLong(MappedProperties.LongKey.fieldSeed);
-        long diceSeed = properties.getLong(MappedProperties.LongKey.diceSeed);
-
-        diceRandom = new Random(diceSeed);
+        resetGame();
 
         glDisplay = GLDisplay.getInstance(Main::task, Main::render);
-
-        int gridNum = properties.getInt(MappedProperties.IntKey.gridNumber);
-
-        field = new Field.Builder(fieldSeed)
-                .gridNum(gridNum)
-                .randomiseSnakeAndLadder()
-                .build();
-
-        playerList = Player.createPlayerList(properties.getInt(MappedProperties.IntKey.playerNumber), gridNum - 1);
-
-        SquareFieldRenderer fieldRenderer = new SquareFieldRenderer(field);
-        fieldPlayerRenderer = new FieldPlayerRenderer(fieldRenderer, playerList);
-        glRendererList.add(fieldPlayerRenderer);
-
-        System.out.println("field_seed = " + fieldSeed);
-        System.out.println("dice_seed = " + diceSeed);
-
-        setPlayer(0);
     }
 
     public static void setPhase(Phase phase) {
@@ -103,6 +73,11 @@ public class Main {
     }
 
     public static void task(TaskCallable.TaskCallArgument arg) {
+        if (glDisplay.isKeyPressed(VK_R)) {
+            MyLogger.loggerIfAbsent(logger -> logger.info("reset game...."));
+            resetGame();
+            glDisplay.resetKey(VK_R);
+        }
         phase.task(arg);
         taskCallableList.forEach(t -> t.task(arg));
     }
@@ -112,6 +87,35 @@ public class Main {
         gl.glLightfv(GL_LIGHT0, GL_POSITION, positionLight, 0);
         gl.glLightfv(GL_LIGHT0, GL_AMBIENT, ambientLight, 0);
         glRendererList.forEach(r -> r.render(display, autoDrawable));
+    }
+
+    public static void resetGame() {
+        properties = PropertiesReader.load();
+
+        long fieldSeed = properties.getLong(MappedProperties.LongKey.fieldSeed);
+        long diceSeed = properties.getLong(MappedProperties.LongKey.diceSeed);
+
+        glRendererList.clear();
+        taskCallableList.clear();
+
+        diceRandom = new Random(diceSeed);
+        int gridNum = properties.getInt(MappedProperties.IntKey.gridNumber);
+
+        field = new Field.Builder(fieldSeed)
+                .gridNum(gridNum)
+                .randomiseSnakeAndLadder()
+                .build();
+
+        playerList = Player.createPlayerList(properties.getInt(MappedProperties.IntKey.playerNumber), gridNum - 1);
+
+        SquareFieldRenderer fieldRenderer = new SquareFieldRenderer(field);
+        fieldPlayerRenderer = new FieldPlayerRenderer(fieldRenderer, playerList);
+        glRendererList.add(fieldPlayerRenderer);
+
+        System.out.println("field_seed = " + fieldSeed);
+        System.out.println("dice_seed = " + diceSeed);
+
+        setPlayer(0);
     }
 
     private static class PlayerMove implements TaskCallable {

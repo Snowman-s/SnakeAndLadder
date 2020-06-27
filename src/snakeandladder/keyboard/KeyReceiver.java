@@ -7,13 +7,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiFunction;
 
-import static com.jogamp.newt.event.KeyEvent.VK_ENTER;
-import static com.jogamp.newt.event.KeyEvent.VK_ESCAPE;
+import static com.jogamp.newt.event.KeyEvent.*;
 
 public class KeyReceiver implements KeyListener {
     protected Map<Short, Integer> receiveKeyPressedFrame = new HashMap<>();
 
     public KeyReceiver() {
+        this.addReceiveKey(VK_R);
         this.addReceiveKey(VK_ENTER);
         this.addReceiveKey(VK_ESCAPE);
     }

@@ -1,6 +1,7 @@
 package snakeandladder.log;
 
 import java.io.IOException;
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.logging.*;
 
@@ -15,7 +16,7 @@ public final class MyLogger {
         Handler fileHandlerTmp;
         logger = Logger.getLogger("snakeandladder");
         try {
-            fileHandlerTmp = new FileHandler("./snakeandladder%g.log", 1_000_000, 10);
+            fileHandlerTmp = new FileHandler("./logs/snakeandladder%g.log", 1_000_000, 10);
         } catch (IOException e) {
             System.err.println("couldn't open log file");
             fileHandlerTmp = null;
@@ -31,10 +32,6 @@ public final class MyLogger {
     }
 
     public static void loggerIfAbsent(Consumer<Logger> loggerConsumer) {
-        if (logger != null) {
-            loggerConsumer.accept(logger);
-        } else {
-            loggerConsumer.accept(Logger.getAnonymousLogger());
-        }
+        loggerConsumer.accept(Objects.requireNonNullElseGet(logger, Logger::getAnonymousLogger));
     }
 }
