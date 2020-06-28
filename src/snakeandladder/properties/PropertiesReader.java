@@ -96,6 +96,17 @@ public final class PropertiesReader {
                             "property " + gridNumKey + " < 2" +
                                     "; fixed to:" + gridNumKey + " = 2");
                 }
+            },
+            //num_player >= 1
+            p->{
+                int numPlayer = p.integerMap.get(MappedProperties.IntKey.playerNumber);
+                String numPlayerKey = MappedProperties.IntKey.playerNumber.getKeyString();
+                if (numPlayer <= 0) {
+                    p.integerMap.put(MappedProperties.IntKey.playerNumber, 1);
+                    Logger.getAnonymousLogger().log(Level.INFO,
+                            "property " + numPlayerKey + " <= 0" +
+                                    "; fixed to:" + numPlayerKey + " = 1");
+                }
             }
     );
 }
